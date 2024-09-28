@@ -283,6 +283,7 @@ def main():
                     st.rerun()
             else:
                 st.error(f"No existe el ticker {new_ticker}")
+                st.rerun()
                 
 
         # Display selected tickers
