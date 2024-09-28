@@ -278,6 +278,7 @@ def main():
             new_ticker = new_ticker.strip().upper()
             if not existe_ticker(new_ticker):
                 st.error(f"No existe el ticker {new_ticker}")
+                pass
                 
             else:
                 if new_ticker not in st.session_state.tickers:
