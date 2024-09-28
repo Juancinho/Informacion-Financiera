@@ -84,6 +84,15 @@ plotly_config = {
 }
 
 # Funciones auxiliares
+
+def existe_ticker(ticker):
+    datosComprobar = yf.Ticker(ticker).history(period="1d")
+
+    if datosComprobar.empty:
+        return False
+    else:
+        return True
+
 def descargar_datos(tickers, fecha_inicio, fecha_fin):
     data = yf.download(tickers, start=fecha_inicio, end=fecha_fin)['Adj Close']
     rendimientos = data.pct_change().dropna()
@@ -267,10 +276,14 @@ def main():
         # Add new ticker
         if add_ticker and new_ticker:
             new_ticker = new_ticker.strip().upper()
-            if new_ticker not in st.session_state.tickers:
-                st.session_state.tickers.append(new_ticker)
-                st.session_state.last_added_ticker = new_ticker
-                st.rerun()
+            if existe_ticker(new_ticker):
+                if new_ticker not in st.session_state.tickers:
+                    st.session_state.tickers.append(new_ticker)
+                    st.session_state.last_added_ticker = new_ticker
+                    st.rerun()
+            else:
+                st.error(f"No existe el ticker {new_ticker}")
+                
 
         # Display selected tickers
         if st.session_state.tickers:
@@ -313,12 +326,15 @@ def main():
                 with st.spinner("Optimizando cartera..."):
                     tickers = st.session_state.tickers
                     rendimientos, precios = descargar_datos(tickers, fecha_inicio, fecha_fin)
+                    
                     rendimientos_medios = rendimientos.mean()
                     matriz_cov = rendimientos.cov()
 
                     ef_fig, max_sharpe_fig, min_vol_fig, max_sharpe_asignacion, min_vol_asignacion = mostrar_ef_simulada_con_aleatorias(
                         rendimientos_medios, matriz_cov, num_carteras, tasa_libre_riesgo, tickers
                     )
+
+                    
 
                     
 
