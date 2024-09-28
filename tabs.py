@@ -264,59 +264,62 @@ def analisis_estadistico_tab():
 
     if st.button("Analizar Distribución de Retornos"):
         if ticker:
-            with st.spinner("Cargando datos y generando análisis..."):
-                rendimientosGraf, _ = descargar_datos(ticker, fecha_inicio_estadistica, fecha_fin_estadistica)
-                
-                # Asegurarse de que rendimientos es una Serie de pandas
-                if isinstance(rendimientosGraf, pd.DataFrame):
-                    rendimientosGraf = rendimientosGraf.squeeze()  # Convertir DataFrame a Serie si es necesario
-                    print(rendimientosGraf)
-                # Calcular estadísticas descriptivas
-                
-                media = rendimientosGraf.mean()
-                mediana = rendimientosGraf.median()
-                desv_est = rendimientosGraf.std()
-                asimetria = rendimientosGraf.skew()
-                curtosis = rendimientosGraf.kurtosis()
+            if existe_ticker(ticker):
+                with st.spinner("Cargando datos y generando análisis..."):
+                    rendimientosGraf, _ = descargar_datos(ticker, fecha_inicio_estadistica, fecha_fin_estadistica)
                     
-                # Calcular el número de bins como la raíz cuadrada del número de fechas
-                num_bins = int(np.sqrt(len(rendimientosGraf)))
-                hist, bordes_intervalos = np.histogram(rendimientosGraf, bins=num_bins, density=True)
-                centros_intervalos = (bordes_intervalos[:-1] + bordes_intervalos[1:]) / 2
-                # Crear histograma con distribución normal ajustada
-                mu, std = norm.fit(rendimientosGraf)
-                # Generar puntos para la curva de distribución normal
-                x = np.linspace(rendimientosGraf.min(), rendimientosGraf.max(), 100)
-                p = norm.pdf(x, media, desv_est)
-                histograma = make_subplots(rows=1, cols=1)
-                histograma.add_trace(go.Bar(x=centros_intervalos, y=hist, name='Histograma', marker_color='skyblue', opacity=0.7))
-                histograma.add_trace(go.Scatter(x=x, y=p, mode='lines', name='Normal Ajustada', line=dict(color='red', width=2)))
-                histograma.update_layout(
-                    height=800,
-                    title=f"Distribución de Retornos Diarios de {ticker}",
-                    xaxis_title="Retorno Diario",
-                    yaxis_title="Densidad de Probabilidad",
-                    showlegend=True,
-                    **plotly_config
-                )
+                    # Asegurarse de que rendimientos es una Serie de pandas
+                    if isinstance(rendimientosGraf, pd.DataFrame):
+                        rendimientosGraf = rendimientosGraf.squeeze()  # Convertir DataFrame a Serie si es necesario
+                        print(rendimientosGraf)
+                    # Calcular estadísticas descriptivas
                     
-                # Mostrar el gráfico
-                st.plotly_chart(histograma, use_container_width=True)       
-                # Mostrar estadísticas descriptivas
-                st.subheader("Estadísticas Descriptivas")
-                col1, col2, col3 = st.columns(3)
-                with col1:
-                    st.metric("Media", f"{media:.4f}")
-                    st.metric("Mediana", f"{mediana:.4f}")
-                with col2:
-                    st.metric("Desviación Estándar", f"{desv_est:.4f}")
-                    st.metric("Asimetría", f"{asimetria:.4f}")
-                with col3:
-                    st.metric("Curtosis", f"{curtosis:.4f}")
-                    st.metric("Número de Bins", num_bins)
-                    
-                # Mostrar los datos
-                st.subheader("Datos de Retornos")
-                st.dataframe(rendimientosGraf.to_frame(name=ticker))
+                    media = rendimientosGraf.mean()
+                    mediana = rendimientosGraf.median()
+                    desv_est = rendimientosGraf.std()
+                    asimetria = rendimientosGraf.skew()
+                    curtosis = rendimientosGraf.kurtosis()
+                        
+                    # Calcular el número de bins como la raíz cuadrada del número de fechas
+                    num_bins = int(np.sqrt(len(rendimientosGraf)))
+                    hist, bordes_intervalos = np.histogram(rendimientosGraf, bins=num_bins, density=True)
+                    centros_intervalos = (bordes_intervalos[:-1] + bordes_intervalos[1:]) / 2
+                    # Crear histograma con distribución normal ajustada
+                    mu, std = norm.fit(rendimientosGraf)
+                    # Generar puntos para la curva de distribución normal
+                    x = np.linspace(rendimientosGraf.min(), rendimientosGraf.max(), 100)
+                    p = norm.pdf(x, media, desv_est)
+                    histograma = make_subplots(rows=1, cols=1)
+                    histograma.add_trace(go.Bar(x=centros_intervalos, y=hist, name='Histograma', marker_color='skyblue', opacity=0.7))
+                    histograma.add_trace(go.Scatter(x=x, y=p, mode='lines', name='Normal Ajustada', line=dict(color='red', width=2)))
+                    histograma.update_layout(
+                        height=800,
+                        title=f"Distribución de Retornos Diarios de {ticker}",
+                        xaxis_title="Retorno Diario",
+                        yaxis_title="Densidad de Probabilidad",
+                        showlegend=True,
+                        **plotly_config
+                    )
+                        
+                    # Mostrar el gráfico
+                    st.plotly_chart(histograma, use_container_width=True)       
+                    # Mostrar estadísticas descriptivas
+                    st.subheader("Estadísticas Descriptivas")
+                    col1, col2, col3 = st.columns(3)
+                    with col1:
+                        st.metric("Media", f"{media:.4f}")
+                        st.metric("Mediana", f"{mediana:.4f}")
+                    with col2:
+                        st.metric("Desviación Estándar", f"{desv_est:.4f}")
+                        st.metric("Asimetría", f"{asimetria:.4f}")
+                    with col3:
+                        st.metric("Curtosis", f"{curtosis:.4f}")
+                        st.metric("Número de Bins", num_bins)
+                        
+                    # Mostrar los datos
+                    st.subheader("Datos de Retornos")
+                    st.dataframe(rendimientosGraf.to_frame(name=ticker))
+            else:
+                st.error(f"No existe el ticker {ticker}")
         else:
             st.warning("Por favor, introduce un ticker antes de analizar.")
