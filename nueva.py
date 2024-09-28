@@ -166,11 +166,13 @@ def mostrar_ef_simulada_con_aleatorias(rendimientos_medios, matriz_cov, num_cart
     fig1.update_layout(title="Frontera Eficiente", xaxis_title="Riesgo Anualizado", yaxis_title="Rendimiento Anualizado", **plotly_config)
 
     # Gráfico circular de asignación para la cartera con el máximo ratio de Sharpe
-    fig2 = go.Figure(go.Pie(labels=max_sharpe_asignacion.columns, values=max_sharpe_asignacion.iloc[0], name='Máximo Ratio de Sharpe'))
+    fig2 = go.Figure(go.Pie(labels=max_sharpe_asignacion.columns, values=max_sharpe_asignacion.iloc[0], name='Máximo Ratio de Sharpe', hole=.6))
+    fig2.update_traces(textposition='outside',textfont_size=22)
     fig2.update_layout(title="Asignación de la Cartera con Máximo Ratio de Sharpe", **plotly_config)
 
     # Gráfico circular de asignación para la cartera de mínima volatilidad
-    fig3 = go.Figure(go.Pie(labels=min_vol_asignacion.columns, values=min_vol_asignacion.iloc[0], name='Mínima Volatilidad'))
+    fig3 = go.Figure(go.Pie(labels=min_vol_asignacion.columns, values=min_vol_asignacion.iloc[0], name='Mínima Volatilidad', hole=.6))
+    fig3.update_traces(textposition='outside',textfont_size=22)
     fig3.update_layout(title="Asignación de la Cartera de Mínima Volatilidad", **plotly_config)
 
     return fig1, fig2, fig3, max_sharpe_asignacion, min_vol_asignacion
@@ -327,55 +329,66 @@ def main():
                     })
 
                     st.header("Resultados")
+                    container = st.container(border=True)
 
-                    st.subheader("Frontera Eficiente")
-                    st.plotly_chart(ef_fig, use_container_width=True)
-
-                    col1, col2 = st.columns(2)
-                    with col1:
-
-                        st.subheader("Cartera con Máximo Ratio de Sharpe")
-                        st.plotly_chart(max_sharpe_fig, use_container_width=True)
-
-                    with col2:
-                        st.subheader("Cartera de Mínima Volatilidad")
-                        st.plotly_chart(min_vol_fig, use_container_width=True)
-
-                    st.subheader("Matriz de Correlación")
-                    matriz_correlacion = rendimientos.corr()
-                    
-                    # Crear mapa de calor para la matriz de correlación
-                    # Crear mapa de calor para la matriz de correlación
-                    fig_corr = go.Figure(data=go.Heatmap(
-                        z=matriz_correlacion.values,
-                        x=matriz_correlacion.index,
-                        y=matriz_correlacion.columns,
-                        colorscale='RdBu',
-                        zmin=-1,
-                        zmax=1,
-                        hovertemplate='<b>X</b>: %{x}<br>' +
-                                    '<b>Y</b>: %{y}<br>' +
-                                    '<b>Correlación</b>: %{z:.2f}<extra></extra>'
-                    ))
-
-                    fig_corr.update_layout(title="Matriz de Correlación", **plotly_config)
-
-                    st.plotly_chart(fig_corr, use_container_width=True)
+                    container.subheader("Frontera Eficiente")
+                    container.plotly_chart(ef_fig, use_container_width=True)
 
                     st.subheader("Asignaciones de Carteras")
                     col1, col2 = st.columns(2)
                     with col1:
-                        st.write("Cartera con Máximo Ratio de Sharpe")
-                        st.dataframe(max_sharpe_asignacion)
+                        container2=st.container(border=True)
 
-                        st.subheader("Estadísticas de rendimiento de activos")
-                        st.dataframe(estadisticas_rendimientos)
+                        container2.subheader("Cartera con Máximo Ratio de Sharpe")
+                        container2.plotly_chart(max_sharpe_fig, use_container_width=True)
+
+                    with col2:
+                        container3=st.container(border=True)
+                        container3.subheader("Cartera de Mínima Volatilidad")
+                        container3.plotly_chart(min_vol_fig, use_container_width=True)
+
+                    
+
+                    
+                    col1, col2 = st.columns(2)
+                    with col1:
+                        container4=st.container(border=True)
+
+                        container4.subheader("Matriz de Correlación")
+                        matriz_correlacion = rendimientos.corr()
+                        
+                        
+                        # Crear mapa de calor para la matriz de correlación
+                        fig_corr = go.Figure(data=go.Heatmap(
+                            z=matriz_correlacion.values,
+                            x=matriz_correlacion.index,
+                            y=matriz_correlacion.columns,
+                            colorscale='RdBu',
+                            zmin=-1,
+                            zmax=1,
+                            hovertemplate='<b>X</b>: %{x}<br>' +
+                                        '<b>Y</b>: %{y}<br>' +
+                                        '<b>Correlación</b>: %{z:.2f}<extra></extra>'
+                        ))
+
+                        fig_corr.update_layout(
+                                                
+                            xaxis=dict(constrain='domain'),
+                            yaxis=dict(scaleanchor='x', constrain='domain'),
+                            dragmode=False,  # Deshabilita el modo de arrastre
+                            **plotly_config
+                        )
+                        
+
+                        container4.plotly_chart(fig_corr, use_container_width=True)
+                        
                         
 
                         
                     with col2:
-                        st.write("Cartera de Mínima Volatilidad")
-                        st.dataframe(min_vol_asignacion)
+                        container5=st.container(border=True)
+                        container5.subheader("Comparación de Rendimiento, Volatilidad y Sharpe por Ticker")
+                        
 
                         # Crear el gráfico de barras agrupadas
                         rendimientos_fig = make_subplots(rows=1, cols=3, subplot_titles=("Rendimiento Anual", "Volatilidad Anual", "Ratio de Sharpe"))
@@ -383,14 +396,17 @@ def main():
                         rendimientos_fig.add_trace(go.Bar(name='Rendimiento Anual', x=estadisticas_rendimientos.index, y=estadisticas_rendimientos['Rendimiento Anual']),row=1, col=1)
                         rendimientos_fig.add_trace(go.Bar(name='Rendimiento Anual', x=estadisticas_rendimientos.index, y=estadisticas_rendimientos['Volatilidad Anual']),row=1, col=2)
                         rendimientos_fig.add_trace(go.Bar(name='Rendimiento Anual', x=estadisticas_rendimientos.index, y=estadisticas_rendimientos['Ratio de Sharpe']),row=1, col=3)
-                        rendimientos_fig.update_layout(title_text="Comparación de Rendimiento, Volatilidad y Sharpe por Ticker", showlegend=False)
+                        
 
                         
-                        st.plotly_chart(rendimientos_fig, use_container_width=True)
+                        container5.plotly_chart(rendimientos_fig, use_container_width=True)
+                    
                     
 
-                    #Gráfico del histórico de precios
-                    st.subheader("Histórico de precios")
+                    
+
+                    container6=st.container(border=True)
+                    container6.subheader("Histórico de precios")
                     fig_prices = go.Figure()
 
                     for ticker in tickers:
@@ -408,7 +424,7 @@ def main():
                         showlegend=True
                     )
 
-                    st.plotly_chart(fig_prices, use_container_width=True)
+                    container6.plotly_chart(fig_prices, use_container_width=True)
 
 
     with tab2:
