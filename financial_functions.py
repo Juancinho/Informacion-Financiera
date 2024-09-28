@@ -7,7 +7,7 @@ from scipy.stats import norm
 
 def existe_ticker(ticker):
     datosComprobar = yf.Ticker(ticker).history(period="1d")
-    if datosComprobar.empty
+    if datosComprobar.empty:
         return False
     else:
         return True
