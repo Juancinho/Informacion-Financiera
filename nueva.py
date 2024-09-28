@@ -221,7 +221,7 @@ def crear_mapa_calor(S, T, r, rango_volatilidad, rango_strike, tipo_opcion='call
 
 # Aplicación Streamlit
 def main():
-    st.title("📊 RAFA ES UN GITANO 📊")
+    st.title("📊 Información Financiera 📊")
 
     tab1, tab2, tab3, tab4 = st.tabs(["Optimizador de Cartera", "Valoración de Opciones", "Mapa de Calor Opciones", "Análisis Estadístico"])
 
