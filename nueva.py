@@ -315,6 +315,14 @@ def main():
                         rendimientos_medios, matriz_cov, num_carteras, tasa_libre_riesgo, tickers
                     )
 
+                    
+
+                    estadisticas_rendimientos= pd.DataFrame({
+                        'Rendimiento Anual': rendimientos_medios * 252,
+                        'Volatilidad Anual': rendimientos.std() * np.sqrt(252),
+                        'Ratio de Sharpe': (rendimientos_medios * 252 - tasa_libre_riesgo) / (rendimientos.std() * np.sqrt(252))
+                    })
+
                     st.header("Resultados")
 
                     st.subheader("Frontera Eficiente")
@@ -351,9 +359,49 @@ def main():
                     with col1:
                         st.write("Cartera con Máximo Ratio de Sharpe")
                         st.dataframe(max_sharpe_asignacion)
+
+                        st.subheader("Estadísticas de rendimiento de activos")
+                        st.dataframe(estadisticas_rendimientos)
+                        
+
+                        
                     with col2:
                         st.write("Cartera de Mínima Volatilidad")
                         st.dataframe(min_vol_asignacion)
+
+                        # Crear el gráfico de barras agrupadas
+                        rendimientos_fig = make_subplots(rows=1, cols=3, subplot_titles=("Rendimiento Anual", "Volatilidad Anual", "Ratio de Sharpe"))
+                        
+                        rendimientos_fig.add_trace(go.Bar(name='Rendimiento Anual', x=estadisticas_rendimientos.index, y=estadisticas_rendimientos['Rendimiento Anual']),row=1, col=1)
+                        rendimientos_fig.add_trace(go.Bar(name='Rendimiento Anual', x=estadisticas_rendimientos.index, y=estadisticas_rendimientos['Volatilidad Anual']),row=1, col=2)
+                        rendimientos_fig.add_trace(go.Bar(name='Rendimiento Anual', x=estadisticas_rendimientos.index, y=estadisticas_rendimientos['Ratio de Sharpe']),row=1, col=3)
+                        rendimientos_fig.update_layout(title_text="Comparación de Rendimiento, Volatilidad y Sharpe por Ticker", showlegend=False)
+
+                        
+                        st.plotly_chart(rendimientos_fig, use_container_width=True)
+                    
+
+                    #Gráfico del histórico de precios
+                    st.subheader("Histórico de precios")
+                    fig_prices = go.Figure()
+
+                    for ticker in tickers:
+                        fig_prices.add_trace(go.Scatter(
+                            x=precios.index,
+                            y=precios[ticker],
+                            mode='lines',
+                            name=ticker
+                        ))
+
+                    fig_prices.update_layout(
+                        
+                        xaxis_title='Fecha',
+                        yaxis_title='Precio',
+                        showlegend=True
+                    )
+
+                    st.plotly_chart(fig_prices, use_container_width=True)
+
 
     with tab2:
         st.header("Valoración de Opciones")
