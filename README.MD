@@ -2,6 +2,8 @@
 
 Bienvenido al proyecto Dashboard de Información Financiera, una aplicación web interactiva que proporciona herramientas potentes para el análisis financiero, la optimización de carteras y la valoración de opciones.
 
+Puedes visitarlo [aquí.](https://joaoinformacionfinanciera.streamlit.app/)
+
 ## 🌟 Características
 
 ### 1. Optimizador de Cartera
