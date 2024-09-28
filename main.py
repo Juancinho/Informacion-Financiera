@@ -276,13 +276,15 @@ def main():
         # Add new ticker
         if add_ticker and new_ticker:
             new_ticker = new_ticker.strip().upper()
-            if True:
+            if not existe_ticker(new_ticker):
+                st.error(f"No existe el ticker {new_ticker}")
+                
+            else:
                 if new_ticker not in st.session_state.tickers:
                     st.session_state.tickers.append(new_ticker)
                     st.session_state.last_added_ticker = new_ticker
                     st.rerun()
-            else:
-                st.error(f"No existe el ticker {new_ticker}")
+                
                 
                 
 
