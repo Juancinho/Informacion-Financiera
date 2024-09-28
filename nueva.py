@@ -202,7 +202,10 @@ def crear_mapa_calor(S, T, r, rango_volatilidad, rango_strike, tipo_opcion='call
         x=strikes,
         y=volatilidades,
         colorscale='rdylgn',
-        colorbar=dict(title='Precio de Opción')
+        colorbar=dict(title='Precio de Opción'),
+        hovertemplate='<b>Strike</b>: %{x}<br>' +
+                                    '<b>Volatilidad</b>: %{y}<br>' +
+                                    '<b>Precio</b>: %{z:.3f}<extra></extra>'
     ))
     
     fig.update_layout(
@@ -342,14 +345,19 @@ def main():
                     matriz_correlacion = rendimientos.corr()
                     
                     # Crear mapa de calor para la matriz de correlación
+                    # Crear mapa de calor para la matriz de correlación
                     fig_corr = go.Figure(data=go.Heatmap(
                         z=matriz_correlacion.values,
                         x=matriz_correlacion.index,
                         y=matriz_correlacion.columns,
                         colorscale='RdBu',
                         zmin=-1,
-                        zmax=1
+                        zmax=1,
+                        hovertemplate='<b>X</b>: %{x}<br>' +
+                                    '<b>Y</b>: %{y}<br>' +
+                                    '<b>Correlación</b>: %{z:.2f}<extra></extra>'
                     ))
+
                     fig_corr.update_layout(title="Matriz de Correlación", **plotly_config)
 
                     st.plotly_chart(fig_corr, use_container_width=True)
