@@ -276,14 +276,14 @@ def main():
         # Add new ticker
         if add_ticker and new_ticker:
             new_ticker = new_ticker.strip().upper()
-            if existe_ticker(new_ticker):
+            if True:
                 if new_ticker not in st.session_state.tickers:
                     st.session_state.tickers.append(new_ticker)
                     st.session_state.last_added_ticker = new_ticker
                     st.rerun()
             else:
                 st.error(f"No existe el ticker {new_ticker}")
-                st.rerun()
+                
                 
 
         # Display selected tickers
