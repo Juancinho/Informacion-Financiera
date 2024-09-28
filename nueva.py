@@ -224,66 +224,136 @@ def main():
 
     with tab1:
         st.header("Optimizador de Cartera")
-        with st.expander("Parámetros de Entrada", expanded=True):
+        
+        # Ticker input section
+        st.subheader("Selección de Tickers")
+        
+        # Custom CSS to adjust input width and center the button
+        st.markdown("""
+        <style>
+        .stTextInput > div > div > input {
+           
+        }
+        .custom-button {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+        </style>
+        """, unsafe_allow_html=True)
+        
+        # Initialize session state for tickers and for tracking changes
+        if 'tickers' not in st.session_state:
+            st.session_state.tickers = []
+        if 'last_added_ticker' not in st.session_state:
+            st.session_state.last_added_ticker = None
+        if 'last_removed_index' not in st.session_state:
+            st.session_state.last_removed_index = None
+        
+        col1, col2, col3 = st.columns([2, 1, 2])
+        with col1:
+            new_ticker = st.text_input("Introduce un ticker", key="new_ticker_input")
+        with col2:
+            st.markdown('<div class="custom-button">', unsafe_allow_html=True)
+            add_ticker = st.button("Añadir Ticker")
+            st.markdown('</div>', unsafe_allow_html=True)
+        
+        # Add new ticker
+        if add_ticker and new_ticker:
+            new_ticker = new_ticker.strip().upper()
+            if new_ticker not in st.session_state.tickers:
+                st.session_state.tickers.append(new_ticker)
+                st.session_state.last_added_ticker = new_ticker
+                st.rerun()
+
+        # Display selected tickers
+        if st.session_state.tickers:
+            st.write("Tickers seleccionados:")
+            cols = st.columns(4)  # Create 4 columns for tickers
+            for i, ticker in enumerate(st.session_state.tickers):
+                with cols[i % 4]:  # Distribute tickers across columns
+                    col1, col2 = st.columns([3, 1])
+                    col1.write(ticker)
+                    if col2.button("❌", key=f"del_{i}", help="Eliminar ticker"):
+                        st.session_state.last_removed_index = i
+                        st.session_state.tickers.pop(i)
+                        st.rerun()
+        else:
+            st.info("No hay tickers seleccionados. Por favor, añade al menos uno.")
+
+        # Clear input after adding
+        if st.session_state.last_added_ticker == new_ticker:
+            st.session_state.last_added_ticker = None
+            new_ticker = ""
+
+        # Separator
+        st.markdown("---")
+
+        # Other parameters
+        with st.expander("Parámetros de Optimización", expanded=True):
             col1, col2 = st.columns(2)
             with col1:
-                tickers = st.text_input("Introduce tickers (separados por comas)", "AAPL,GOOGL,MSFT").split(',')
-                tickers = [ticker.strip() for ticker in tickers]
                 fecha_inicio = st.date_input("Fecha de Inicio")
+                tasa_libre_riesgo = st.number_input("Tasa Libre de Riesgo", value=0.02, step=0.01)
             with col2:
                 fecha_fin = st.date_input("Fecha de Fin")
-                tasa_libre_riesgo = st.number_input("Tasa Libre de Riesgo", value=0.02, step=0.01)
                 num_carteras = st.number_input("Número de Carteras a Simular", value=5000, step=1000)
 
-        if st.button("Optimizar Cartera", key="boton_optimizar"):
-            with st.spinner("Optimizando cartera..."):
-                rendimientos, precios = descargar_datos(tickers, fecha_inicio, fecha_fin)
-                rendimientos_medios = rendimientos.mean()
-                matriz_cov = rendimientos.cov()
+        # Optimization button
+        if st.button("Optimizar Cartera", key="boton_optimizar", type="primary"):
+            if not st.session_state.tickers:
+                st.warning("Por favor, añade al menos un ticker antes de optimizar la cartera.")
+            else:
+                with st.spinner("Optimizando cartera..."):
+                    tickers = st.session_state.tickers
+                    rendimientos, precios = descargar_datos(tickers, fecha_inicio, fecha_fin)
+                    rendimientos_medios = rendimientos.mean()
+                    matriz_cov = rendimientos.cov()
 
-                ef_fig, max_sharpe_fig, min_vol_fig, max_sharpe_asignacion, min_vol_asignacion = mostrar_ef_simulada_con_aleatorias(
-                    rendimientos_medios, matriz_cov, num_carteras, tasa_libre_riesgo, tickers
-                )
+                    ef_fig, max_sharpe_fig, min_vol_fig, max_sharpe_asignacion, min_vol_asignacion = mostrar_ef_simulada_con_aleatorias(
+                        rendimientos_medios, matriz_cov, num_carteras, tasa_libre_riesgo, tickers
+                    )
 
-                st.header("Resultados")
+                    st.header("Resultados")
 
-                st.subheader("Frontera Eficiente")
-                st.plotly_chart(ef_fig, use_container_width=True)
+                    st.subheader("Frontera Eficiente")
+                    st.plotly_chart(ef_fig, use_container_width=True)
 
-                col1, col2 = st.columns(2)
-                with col1:
+                    col1, col2 = st.columns(2)
+                    with col1:
 
-                    st.subheader("Cartera con Máximo Ratio de Sharpe")
-                    st.plotly_chart(max_sharpe_fig, use_container_width=True)
+                        st.subheader("Cartera con Máximo Ratio de Sharpe")
+                        st.plotly_chart(max_sharpe_fig, use_container_width=True)
 
-                with col2:
-                    st.subheader("Cartera de Mínima Volatilidad")
-                    st.plotly_chart(min_vol_fig, use_container_width=True)
+                    with col2:
+                        st.subheader("Cartera de Mínima Volatilidad")
+                        st.plotly_chart(min_vol_fig, use_container_width=True)
 
-                st.subheader("Matriz de Correlación")
-                matriz_correlacion = rendimientos.corr()
-                
-                # Crear mapa de calor para la matriz de correlación
-                fig_corr = go.Figure(data=go.Heatmap(
-                    z=matriz_correlacion.values,
-                    x=matriz_correlacion.index,
-                    y=matriz_correlacion.columns,
-                    colorscale='RdBu',
-                    zmin=-1,
-                    zmax=1
-                ))
-                fig_corr.update_layout(title="Matriz de Correlación", **plotly_config)
+                    st.subheader("Matriz de Correlación")
+                    matriz_correlacion = rendimientos.corr()
+                    
+                    # Crear mapa de calor para la matriz de correlación
+                    fig_corr = go.Figure(data=go.Heatmap(
+                        z=matriz_correlacion.values,
+                        x=matriz_correlacion.index,
+                        y=matriz_correlacion.columns,
+                        colorscale='RdBu',
+                        zmin=-1,
+                        zmax=1
+                    ))
+                    fig_corr.update_layout(title="Matriz de Correlación", **plotly_config)
 
-                st.plotly_chart(fig_corr, use_container_width=True)
+                    st.plotly_chart(fig_corr, use_container_width=True)
 
-                st.subheader("Asignaciones de Carteras")
-                col1, col2 = st.columns(2)
-                with col1:
-                    st.write("Cartera con Máximo Ratio de Sharpe")
-                    st.dataframe(max_sharpe_asignacion)
-                with col2:
-                    st.write("Cartera de Mínima Volatilidad")
-                    st.dataframe(min_vol_asignacion)
+                    st.subheader("Asignaciones de Carteras")
+                    col1, col2 = st.columns(2)
+                    with col1:
+                        st.write("Cartera con Máximo Ratio de Sharpe")
+                        st.dataframe(max_sharpe_asignacion)
+                    with col2:
+                        st.write("Cartera de Mínima Volatilidad")
+                        st.dataframe(min_vol_asignacion)
 
     with tab2:
         st.header("Valoración de Opciones")
