@@ -92,3 +92,23 @@ def black_scholes(S, K, T, r, sigma):
     precio_put = K * math.exp(-r * T) * norm.cdf(-d2) - S * norm.cdf(-d1)
     
     return (precio_call, precio_put)
+
+
+def montecarlo_black_scholes(S, K, T, r, sigma, num_simulaciones):
+    # Generar caminos aleatorios para el precio del activo
+    z = np.random.standard_normal(num_simulaciones)
+    ST = S * np.exp((r - 0.5 * sigma**2) * T + sigma * np.sqrt(T) * z)
+
+    # Calcular el pago de la opción al vencimiento
+    payoffCall = np.maximum(ST - K, 0)
+    payoffPut = np.maximum(K - ST, 0)
+
+
+    # Calcular el precio de la opción (valor presente del pago esperado)
+    precioCall = np.exp(-r * T) * np.mean(payoffCall)
+    precioPut = np.exp(-r * T) * np.mean(payoffPut)
+
+    return (precioCall,precioPut)
+
+
+

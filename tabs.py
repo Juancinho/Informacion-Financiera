@@ -4,8 +4,8 @@ import numpy as np
 from scipy.stats import norm
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
-from financial_functions import existe_ticker, descargar_datos, black_scholes, calcular_correlacion_movil
-from visualization import mostrar_ef_simulada_con_aleatorias, crear_mapa_calor, crear_grafico_correlacion_tiempo
+from financial_functions import existe_ticker, descargar_datos, black_scholes, calcular_correlacion_movil, montecarlo_black_scholes
+from visualization import mostrar_ef_simulada_con_aleatorias, crear_mapa_calor, crear_grafico_correlacion_tiempo, graficar_caminos_montecarlo
 from ui_components import plotly_config
 import datetime
 
@@ -296,6 +296,51 @@ def valoracion_opciones_tab():
                 """,
                 unsafe_allow_html=True
             )
+
+
+def montecarlo_opciones():
+    st.header("Valoración de Opciones Método de Montecarlo")
+    st.markdown("Utiliza esta herramienta para simular distintos caminos del precio de una acción para calcular el precio de la opción.")
+    with st.expander("Parámetros de la Opción", expanded=True):
+        col1, col2 = st.columns(2)
+        with col1:
+            S = st.number_input("Precio Actual del Activo Subyacente", value=100.0, step=1.0)
+            K = st.number_input("Precio de Ejercicio", value=100.0, step=1.0)
+            T = st.number_input("Tiempo hasta el Vencimiento (en años)", value=1.0, step=0.1)
+        with col2:
+            r = st.number_input("Tasa Interés", value=0.05, step=0.01)
+            sigma = st.number_input("Volatilidad  (σ)", value=0.2, step=0.01)
+            num_simulaciones = st.number_input("Número de  simulaciones", value=1000, step=1)
+
+        
+        if st.button("Valorar Opción ", key="boton_valorar_opcion_montecarlo"):
+            precio_call, precio_put = montecarlo_black_scholes(S, K, T, r, sigma,num_simulaciones)
+            
+            col1, col2 = st.columns(2)
+            with col1:
+                st.markdown(
+                    f"""
+                    <div class="card" style="background-color: #4CAF50;">
+                        <h3 style="color: white; text-align: center;">Precio de la Opción Call</h3>
+                        <h2 style="color: white; text-align: center;">${precio_call:.3f}</h2>
+                    </div>
+                    """,
+                    unsafe_allow_html=True
+                )
+            with col2:
+                st.markdown(
+                    f"""
+                    <div class="card" style="background-color: #f44336;">
+                        <h3 style="color: white; text-align: center;">Precio de la Opción Put</h3>
+                        <h2 style="color: white; text-align: center;">${precio_put:.3f}</h2>
+                    </div>
+                    """,
+                    unsafe_allow_html=True
+                )
+            grafico_caminos=graficar_caminos_montecarlo(S,T,r,sigma,5,100)
+            st.plotly_chart(grafico_caminos, use_container_width=True)
+
+
 
 def mapa_calor_opciones_tab():
     st.header("Mapa de Calor de Precios de Opciones")
