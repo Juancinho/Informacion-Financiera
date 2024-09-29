@@ -121,12 +121,15 @@ def optimizador_cartera_tab():
                     container2.subheader("Cartera con Máximo Ratio de Sharpe")
                     container2.plotly_chart(max_sharpe_fig, use_container_width=True)
                     container2.metric("Retorno Anualizado", f"{retorno_max_sharpe*100:.2f}%")
+                    container2.info("Este es el retorno anual esperado basado en datos históricos. No garantiza resultados futuros.")
+
 
                 with col2:
                     container3 = st.container(border=True)
                     container3.subheader("Cartera de Mínima Volatilidad")
                     container3.plotly_chart(min_vol_fig, use_container_width=True)
                     container3.metric("Retorno Anualizado", f"{retorno_min_vol*100:.2f}%")
+                    container3.info("Este es el retorno anual esperado de la cartera con menor riesgo, basado en datos históricos.")
 
                 col1, col2 = st.columns(2)
                 with col1:
