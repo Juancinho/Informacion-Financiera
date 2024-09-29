@@ -86,12 +86,9 @@ plotly_config = {
 # Funciones auxiliares
 
 def existe_ticker(ticker):
-    datosComprobar = yf.Ticker(ticker).history(period="1d")
+    #datosComprobar = yf.Ticker(ticker).history(period="1d")
 
-    if datosComprobar.empty:
-        return False
-    else:
-        return True
+    return True
 
 def descargar_datos(tickers, fecha_inicio, fecha_fin):
     data = yf.download(tickers, start=fecha_inicio, end=fecha_fin)['Adj Close']
