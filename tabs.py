@@ -4,8 +4,8 @@ import numpy as np
 from scipy.stats import norm
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
-from financial_functions import existe_ticker, descargar_datos, black_scholes
-from visualization import mostrar_ef_simulada_con_aleatorias, crear_mapa_calor
+from financial_functions import existe_ticker, descargar_datos, black_scholes, calcular_correlacion_movil
+from visualization import mostrar_ef_simulada_con_aleatorias, crear_mapa_calor, crear_grafico_correlacion_tiempo
 from ui_components import plotly_config
 import datetime
 
@@ -221,6 +221,12 @@ def optimizador_cartera_tab():
                 )
 
                 container6.plotly_chart(fig_prices, use_container_width=True)
+                container7 = st.container(border=True)
+                container7.subheader("Evolución de la Correlación entre Tickers")
+                    
+                correlaciones = calcular_correlacion_movil(rendimientos)
+                fig_corr_tiempo = crear_grafico_correlacion_tiempo(correlaciones, tickers)
+                container7.plotly_chart(fig_corr_tiempo, use_container_width=True)
 
 def valoracion_opciones_tab():
     st.header("Valoración de Opciones")

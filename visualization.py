@@ -48,6 +48,32 @@ def mostrar_ef_simulada_con_aleatorias(rendimientos_medios, matriz_cov, num_cart
 
     return fig1, fig2, fig3, max_sharpe_asignacion, min_vol_asignacion, rp, rp_min, retorno_real_max_sharpe, retorno_real_min_vol
 
+
+
+def crear_grafico_correlacion_tiempo(correlaciones, tickers):
+    fig = go.Figure()
+    
+    for i in range(len(tickers)):
+        for j in range(i+1, len(tickers)):
+            ticker1, ticker2 = tickers[i], tickers[j]
+            corr = correlaciones.xs(key=ticker2, level=1)[ticker1]
+            fig.add_trace(go.Scatter(
+                x=corr.index,
+                y=corr.values,
+                mode='lines',
+                name=f'{ticker1} vs {ticker2}'
+            ))
+    
+    fig.update_layout(
+        xaxis_title="Fecha",
+        yaxis_title="Correlación",
+        yaxis=dict(range=[-1, 1]),
+        **plotly_config
+    )
+    
+    return fig
+
+
 def crear_mapa_calor(S, T, r, rango_volatilidad, rango_strike, tipo_opcion='call'):
     volatilidades = np.linspace(rango_volatilidad[0], rango_volatilidad[1], 20)
     strikes = np.linspace(rango_strike[0], rango_strike[1], 20)

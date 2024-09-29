@@ -22,6 +22,11 @@ def rendimiento_cartera(pesos, rendimientos_medios, matriz_cov, periodo_tiempo=2
     std = np.sqrt(np.dot(pesos.T, np.dot(matriz_cov, pesos))) * np.sqrt(periodo_tiempo)
     return std, rendimientos
 
+def calcular_correlacion_movil(rendimientos, ventana=30):
+    correlaciones = rendimientos.rolling(window=ventana).corr()
+    return correlaciones
+
+
 
 def calcular_retorno_real(pesos, precios):
     """
