@@ -129,7 +129,7 @@ def optimizador_cartera_tab():
                     container3.subheader("Cartera de Mínima Volatilidad")
                     container3.plotly_chart(min_vol_fig, use_container_width=True)
                     container3.metric("Retorno Anualizado", f"{retorno_min_vol*100:.2f}%")
-                    container3.info("Este es el retorno anual esperado de la cartera con menor riesgo, basado en datos históricos.")
+                    container3.info("Este es el retorno anual esperado basado en datos históricos. No garantiza resultados futuros.")
 
                 col1, col2 = st.columns(2)
                 with col1:
