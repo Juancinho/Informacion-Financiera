@@ -308,7 +308,7 @@ def analisis_estadistico_tab():
     with col2:
         fecha_fin_estadistica = st.date_input("Fecha de Fin de Datos Históricos", key="fecha_fin_estadistica")
 
-    if st.button("Analizar Distribución de Retornos"):
+    if st.button("Analizar Distribución de Retornos") or ticker:
         if ticker:
             if existe_ticker(ticker):
                 with st.spinner("Cargando datos y generando análisis..."):
