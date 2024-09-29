@@ -301,6 +301,22 @@ def valoracion_opciones_tab():
 def montecarlo_opciones():
     st.header("Valoración de Opciones Método de Montecarlo")
     st.markdown("Utiliza esta herramienta para simular distintos caminos del precio de una acción para calcular el precio de la opción.")
+    with st.expander("¿Qué es?", expanded=False):
+        st.markdown("El código anterior modela el precio del activo subyacente ($S_t$) como un movimiento browniano geométrico. Este proceso se describe mediante la siguiente fórmula que es la que se implementa en la función del código:")
+        st.latex(r'''S_T=S \cdot \exp \left(\left(r-\frac{1}{2} \sigma^2\right) T+\sigma \sqrt{T} Z\right)''')
+        st.markdown("Donde:")
+        st.markdown("- $S$ es el precio actual del activo subyacente.")
+        st.markdown("- $r$ es la tasa de interés libre de riesgo.")
+        st.markdown("- $\sigma$ es la volatilidad del activo subyacente.")
+        st.markdown("- $T$ es el tiempo hasta el vencimiento en años.")
+        st.markdown("- $Z$ es una variable aleatoria que sigue una normal estándar.")
+        st.markdown("La simulación anterior se repite generando múltiples caminos que el precio del activo podría seguir.")
+        st.markdown("Dependiendo del tipo de opción (call o put), se calcula el pago al vencimiento para cada camino simulado:")
+        st.markdown(r'''- **Call:** $\text{ Payoff }_{\text {call }}=\max \left(S_T-K, 0\right)$''')
+        st.markdown(r'''- **Put:** $\text { Payoff }_{\text {put }}=\max \left(K-S_T, 0\right)$''')
+        st.markdown("Una vez que se han calculado los pagos para todos los caminos simulados, se toma el promedio de esos pagos y se descuenta a la tasa libre de riesgo $r$ para obtener el valor presente de la opción:")
+        st.latex(r'''\text { Precio de la opción }=e^{-r T} \cdot \frac{1}{\text { numSimulaciones }} \sum_{i=1}^{\text {numSimulaciones }} \text { Payoff }_i''')
+        st.markdown("El factor $e^{-rT}$ se utiliza para descontar el pago esperado al presente, teniendo en cuenta la tasa libre de riesgo y el tiempo hasta el vencimiento. Al promediar los resultados de todas las simulaciones, obtenemos una estimación del valor esperado de la opción, que es su precio justo bajo las condiciones simuladas.")
     with st.expander("Parámetros de la Opción", expanded=True):
         col1, col2 = st.columns(2)
         with col1:
@@ -339,6 +355,7 @@ def montecarlo_opciones():
                 )
             grafico_caminos=graficar_caminos_montecarlo(S,T,r,sigma,5,100)
             st.plotly_chart(grafico_caminos, use_container_width=True)
+            st.info("En esta gráfica se muestran 5 simulaciones del precio del activo subyacente con los datos introducidos anteriormente.")
 
 
 
