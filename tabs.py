@@ -112,6 +112,13 @@ def optimizador_cartera_tab():
                 container = st.container(border=True)
 
                 container.subheader("Frontera Eficiente")
+                with container.expander("¿Qué es?", expanded=False):
+                    st.markdown("La frontera eficiente es el conjunto de todas las combinaciones óptimas de activos (acciones, bonos, etc.) que ofrecen el mayor rendimiento esperado para un nivel dado de riesgo o, de manera inversa, que minimizan el riesgo para un nivel dado de rendimiento esperado.")
+                    st.markdown("En otras palabras, una cartera es eficiente si no se puede mejorar su rendimiento esperado sin aumentar su riesgo o si no se puede reducir su riesgo sin disminuir el rendimiento esperado. Cualquier combinación de activos fuera de la frontera eficiente es ineficiente, ya que otra combinación puede proporcionar un mejor rendimiento para el mismo nivel de riesgo.")
+                    st.markdown("En el gráfico principal, cada punto representa una cartera simulada con diferentes combinaciones de activos. Estas carteras fueron generadas aleatoriamente utilizando la técnica de Montecarlo, que consiste en crear una gran cantidad de posibles combinaciones de activos y evaluar su comportamiento en términos de riesgo y rendimiento.")
+                    st.markdown("- **Eje X (Riesgo Anualizado):** Muestra la volatilidad o desviación estándar de cada cartera. A medida que el valor aumenta hacia la derecha, significa que la cartera es más riesgosa (más incierta en sus retornos).")
+                    st.markdown("- **Eje Y (Rendimiento Anualizado):** Muestra el rendimiento esperado de cada cartera. Cuanto más alto es el valor en el eje Y, mayor es el rendimiento esperado de la cartera.")
+                    st.markdown("- **Color de los puntos:** Representa el ratio de Sharpe de cada cartera, un indicador que mide la cantidad de rendimiento adicional que una cartera ofrece por cada unidad adicional de riesgo. Cuanto más brillante o más alto el valor en la escala de colores, mayor es el ratio de Sharpe, lo que indica una mejor compensación entre riesgo y rendimiento.")
                 container.plotly_chart(ef_fig, use_container_width=True)
 
                 st.subheader("Asignaciones de Carteras")
@@ -119,8 +126,19 @@ def optimizador_cartera_tab():
                 with col1:
                     container2 = st.container(border=True)
                     container2.subheader("Cartera con Máximo Ratio de Sharpe")
-                    with st.expander("¿Qué es?", expanded=True):
-                            st.info("El ratio de sharpe")
+                    with container2.expander("¿Qué es?", expanded=False):
+                            st.write("El **Ratio de Sharpe** es una medida financiera que se utiliza para evaluar el rendimiento ajustado por riesgo de una inversión o una cartera.")
+                            st.markdown("**Fórmula:**")
+                            st.latex(r'''\frac{R_p - R_f}{\sigma_p}''')
+                            st.markdown('''Donde:''')
+                            st.markdown("- $R_p$ es el retorno promedio de la cartera o inversión.")
+                            st.markdown("- $R_f$ es la tasa libre de riesgo.")  
+                            st.markdown("- $\sigma_p$ es la volatilidad de la cartera")          
+                                                                                
+                            st.markdown('''**Interpretación**:''')
+                            st.markdown("- Un ratio de Sharpe alto indica que el rendimiento ajustado por riesgo es bueno, es decir, que por cada unidad de riesgo asumida, la cartera genera un buen rendimiento adicional.")
+                            st.markdown("- Un ratio de Sharpe bajo sugiere que los rendimientos adicionales no justifican el riesgo tomado.")
+
                     container2.plotly_chart(max_sharpe_fig, use_container_width=True)
                     container2.metric("Retorno Esperado Anualizado", f"{retorno_esperado_max_sharpe*100:.2f}%")
                     container2.info("Este es el retorno anual esperado basado en datos históricos. No garantiza resultados futuros.")
@@ -132,6 +150,9 @@ def optimizador_cartera_tab():
                 with col2:
                     container3 = st.container(border=True)
                     container3.subheader("Cartera de Mínima Volatilidad")
+                    with container3.expander("¿Qué es?", expanded=False):
+                        st.markdown("La cartera de mínima volatilidad es aquella combinación de activos que tiene menor nivel de riesgo (medido por la volatilidad o desviación típica de los rendimientos)")
+                    
                     container3.plotly_chart(min_vol_fig, use_container_width=True)
                     container3.metric("Retorno Esperado Anualizado", f"{retorno_esperado_min_vol*100:.2f}%")
                     container3.info("Este es el retorno anual esperado basado en datos históricos. No garantiza resultados futuros.")
@@ -341,9 +362,7 @@ def analisis_estadistico_tab():
                         st.metric("Curtosis", f"{curtosis:.4f}")
                         st.metric("Número de Bins", num_bins)
                         
-                    # Mostrar los datos
-                    st.subheader("Datos de Retornos")
-                    st.dataframe(rendimientosGraf.to_frame(name=ticker))
+                    
             else:
                 st.error(f"No existe el ticker {ticker}")
         else:

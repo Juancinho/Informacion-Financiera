@@ -34,7 +34,7 @@ def mostrar_ef_simulada_con_aleatorias(rendimientos_medios, matriz_cov, num_cart
     ))
     fig1.add_trace(go.Scatter(x=[sdp], y=[rp], mode='markers', marker=dict(color='red', size=10, symbol='star'), name='Cartera con Máximo Ratio de Sharpe'))
     fig1.add_trace(go.Scatter(x=[sdp_min], y=[rp_min], mode='markers', marker=dict(color='green', size=10, symbol='star'), name='Cartera de Mínima Volatilidad'))
-    fig1.update_layout(title="Frontera Eficiente", xaxis_title="Riesgo Anualizado", yaxis_title="Rendimiento Anualizado", **plotly_config)
+    fig1.update_layout(xaxis_title="Riesgo Anualizado", yaxis_title="Rendimiento Anualizado", **plotly_config)
 
     # Gráfico circular de asignación para la cartera con el máximo ratio de Sharpe
     fig2 = go.Figure(go.Pie(labels=max_sharpe_asignacion.columns, values=max_sharpe_asignacion.iloc[0], name='Máximo Ratio de Sharpe', hole=.6))
