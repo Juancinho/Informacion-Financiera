@@ -22,6 +22,21 @@ def rendimiento_cartera(pesos, rendimientos_medios, matriz_cov, periodo_tiempo=2
     std = np.sqrt(np.dot(pesos.T, np.dot(matriz_cov, pesos))) * np.sqrt(periodo_tiempo)
     return std, rendimientos
 
+
+def calcular_retorno_real(pesos, precios):
+    """
+    Calcula el retorno real de una cartera para un período dado.
+    
+    :param pesos: Array de pesos de los activos en la cartera
+    :param precios: DataFrame de precios históricos
+    :return: Retorno total del período
+    """
+    retornos_diarios = precios.pct_change().dropna()
+    retornos_cartera = (retornos_diarios * pesos).sum(axis=1)
+    retorno_total = (1 + retornos_cartera).prod() - 1
+    return retorno_total
+
+
 def ratio_sharpe_negativo(pesos, rendimientos_medios, matriz_cov, tasa_libre_riesgo):
     p_var, p_ret = rendimiento_cartera(pesos, rendimientos_medios, matriz_cov)
     return -(p_ret - tasa_libre_riesgo) / p_var

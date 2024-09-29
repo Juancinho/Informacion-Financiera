@@ -2,20 +2,22 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import pandas as pd
 import numpy as np
-from financial_functions import rendimiento_cartera, maximizar_ratio_sharpe, minima_varianza, carteras_aleatorias, black_scholes
+from financial_functions import calcular_retorno_real,rendimiento_cartera, maximizar_ratio_sharpe, minima_varianza, carteras_aleatorias, black_scholes
 from ui_components import plotly_config
 
-def mostrar_ef_simulada_con_aleatorias(rendimientos_medios, matriz_cov, num_carteras, tasa_libre_riesgo, tickers):
+def mostrar_ef_simulada_con_aleatorias(rendimientos_medios, matriz_cov, num_carteras, tasa_libre_riesgo, tickers,precios):
     resultados, pesos = carteras_aleatorias(num_carteras, rendimientos_medios, matriz_cov, tasa_libre_riesgo)
 
     max_sharpe = maximizar_ratio_sharpe(rendimientos_medios, matriz_cov, tasa_libre_riesgo)
     sdp, rp = rendimiento_cartera(max_sharpe['x'], rendimientos_medios, matriz_cov)
+    retorno_real_max_sharpe = calcular_retorno_real(max_sharpe['x'], precios)
     max_sharpe_asignacion = pd.DataFrame(max_sharpe['x'], index=tickers, columns=['asignación'])
     max_sharpe_asignacion['asignación'] = [round(i*100, 2) for i in max_sharpe_asignacion['asignación']]
     max_sharpe_asignacion = max_sharpe_asignacion.T
 
     min_vol = minima_varianza(rendimientos_medios, matriz_cov)
     sdp_min, rp_min = rendimiento_cartera(min_vol['x'], rendimientos_medios, matriz_cov)
+    retorno_real_min_vol = calcular_retorno_real(min_vol['x'], precios)
     min_vol_asignacion = pd.DataFrame(min_vol['x'], index=tickers, columns=['asignación'])
     min_vol_asignacion['asignación'] = [round(i*100, 2) for i in min_vol_asignacion['asignación']]
     min_vol_asignacion = min_vol_asignacion.T
@@ -44,7 +46,7 @@ def mostrar_ef_simulada_con_aleatorias(rendimientos_medios, matriz_cov, num_cart
     fig3.update_traces(textposition='outside',textfont_size=22)
     fig3.update_layout(title="Asignación de la Cartera de Mínima Volatilidad", **plotly_config)
 
-    return fig1, fig2, fig3, max_sharpe_asignacion, min_vol_asignacion, rp, rp_min
+    return fig1, fig2, fig3, max_sharpe_asignacion, min_vol_asignacion, rp, rp_min, retorno_real_max_sharpe, retorno_real_min_vol
 
 def crear_mapa_calor(S, T, r, rango_volatilidad, rango_strike, tipo_opcion='call'):
     volatilidades = np.linspace(rango_volatilidad[0], rango_volatilidad[1], 20)
