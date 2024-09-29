@@ -300,6 +300,7 @@ def valoracion_opciones_tab():
 
 def montecarlo_opciones():
     st.balloons()
+    st.toast('RAFA GILIPOLLAS!', icon='🎉')
     st.header("Valoración de Opciones Método de Montecarlo")
     st.markdown("Utiliza esta herramienta para simular distintos caminos del precio de una acción para calcular el precio de la opción.")
     with st.expander("Parámetros de la Opción", expanded=True):
