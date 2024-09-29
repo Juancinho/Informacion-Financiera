@@ -156,7 +156,7 @@ def optimizador_cartera_tab():
                     
                 with col2:
                     container5 = st.container(border=True)
-                    container5.subheader("Comparación de Rendimiento, Volatilidad y Sharpe por Ticker")
+                    container5.subheader("Comparación de Rendimiento, Volatilidad y Sharpe")
                     
                     # Crear el gráfico de barras agrupadas
                     rendimientos_fig = make_subplots(rows=1, cols=3, subplot_titles=("Rendimiento Anual", "Volatilidad Anual", "Ratio de Sharpe"))
