@@ -242,10 +242,7 @@ def valoracion_opciones_tab():
         st.markdown("- **T (tiempo hasta expiración):** Es el tiempo que falta para que expire la opción, expresado en años. ")
         st.markdown("- **r (tasa libre de riesgo):** Es la tasa de interés a la cual se puede invertir sin riesgo en el mercado, por ejemplo, los bonos del Tesoro.")
         st.markdown("- **σ (Volatilidad del activo subyacente):** Es la desviación estándar del rendimiento del activo subyacente y refleja la incertidumbre o el riesgo asociado al precio del activo.")
-        st.markdown("Donde $\Phi$ es la función de distribución acumulada de una normal estándar.")
-   
-   
-
+        
         st.markdown("### Fórmula utilizada:")
         st.markdown("Hay dos componentes que son clave:")
         st.latex(r'''d_1=\frac{\ln (S / K)+\left(r+\frac{\sigma^2}{2}\right) T}{\sigma \sqrt{T}}''')
@@ -254,6 +251,7 @@ def valoracion_opciones_tab():
         st.markdown("A partir de estos valores de $d_1$ y $d_2$ se calculan los precios de las opciones:")
         st.markdown("- **Precio de una call:** $C=S \cdot \Phi(d_1) - K \cdot e^{-rT} \cdot \Phi(d_2)$")
         st.markdown("- **Precio de una put:** $P=K \cdot e^{-rT} \cdot \Phi(-d_2) - S \cdot \Phi(-d_1)$")
+        st.markdown("Donde $\Phi$ es la función de distribución acumulada de una normal estándar.")
     with st.expander("Parámetros de la Opción", expanded=True):
         col1, col2 = st.columns(2)
         with col1:
