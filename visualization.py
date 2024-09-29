@@ -39,12 +39,12 @@ def mostrar_ef_simulada_con_aleatorias(rendimientos_medios, matriz_cov, num_cart
     # Gráfico circular de asignación para la cartera con el máximo ratio de Sharpe
     fig2 = go.Figure(go.Pie(labels=max_sharpe_asignacion.columns, values=max_sharpe_asignacion.iloc[0], name='Máximo Ratio de Sharpe', hole=.6))
     fig2.update_traces(textposition='outside',textfont_size=22)
-    fig2.update_layout(title="Asignación de la Cartera con Máximo Ratio de Sharpe", **plotly_config)
+    
 
     # Gráfico circular de asignación para la cartera de mínima volatilidad
     fig3 = go.Figure(go.Pie(labels=min_vol_asignacion.columns, values=min_vol_asignacion.iloc[0], name='Mínima Volatilidad', hole=.6))
     fig3.update_traces(textposition='outside',textfont_size=22)
-    fig3.update_layout(title="Asignación de la Cartera de Mínima Volatilidad", **plotly_config)
+    
 
     return fig1, fig2, fig3, max_sharpe_asignacion, min_vol_asignacion, rp, rp_min, retorno_real_max_sharpe, retorno_real_min_vol
 
