@@ -30,16 +30,28 @@ def optimizador_cartera_tab():
         add_ticker = st.button("Añadir Ticker")
         st.markdown('</div>', unsafe_allow_html=True)
     
-    # Add new ticker
-    if add_ticker and new_ticker:
-        new_ticker = new_ticker.strip().upper()
-        if existe_ticker(new_ticker):
-            if new_ticker not in st.session_state.tickers:
-                st.session_state.tickers.append(new_ticker)
-                st.session_state.last_added_ticker = new_ticker
+
+
+    # Function to add a ticker
+    def add_ticker_func(ticker):
+        ticker = ticker.strip().upper()
+        if existe_ticker(ticker):
+            if ticker not in st.session_state.tickers:
+                st.session_state.tickers.append(ticker)
+                st.session_state.last_added_ticker = ticker
                 st.rerun()
         else:
-            st.error(f"No existe el ticker {new_ticker}")
+            st.error(f"No existe el ticker {ticker}")
+
+
+
+    # Add new ticker when button is clicked
+    if add_ticker and new_ticker:
+        add_ticker_func(new_ticker)
+    
+    # Add new ticker when Enter is pressed
+    if new_ticker and new_ticker != st.session_state.last_added_ticker:
+        add_ticker_func(new_ticker)
     
     # Display selected tickers
     if st.session_state.tickers:
