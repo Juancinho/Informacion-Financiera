@@ -7,6 +7,7 @@ from plotly.subplots import make_subplots
 from financial_functions import existe_ticker, descargar_datos, black_scholes
 from visualization import mostrar_ef_simulada_con_aleatorias, crear_mapa_calor
 from ui_components import plotly_config
+import datetime
 
 def optimizador_cartera_tab():
     st.header("Optimizador de Cartera")
@@ -80,7 +81,7 @@ def optimizador_cartera_tab():
     with st.expander("Parámetros de Optimización", expanded=True):
         col1, col2 = st.columns(2)
         with col1:
-            fecha_inicio = st.date_input("Fecha de Inicio")
+            fecha_inicio = st.date_input("Fecha de Inicio", datetime.date(2019, 7, 6))
             tasa_libre_riesgo = st.number_input("Tasa Libre de Riesgo", value=0.02, step=0.01)
         with col2:
             fecha_fin = st.date_input("Fecha de Fin")
@@ -303,10 +304,10 @@ def analisis_estadistico_tab():
 
     col1, col2 = st.columns(2)
     with col1:
-        fecha_inicio_estadistica = st.date_input("Fecha de Inicio de Datos Históricos", key="fecha_inicio_estadistica")
+        fecha_inicio_estadistica = st.date_input("Fecha de Inicio de Datos Históricos",datetime.date(2019, 7, 6), key="fecha_inicio_estadistica")
         
     with col2:
-        fecha_fin_estadistica = st.date_input("Fecha de Fin de Datos Históricos", key="fecha_fin_estadistica")
+        fecha_fin_estadistica = st.date_input("Fecha de Fin de Datos Históricos",key="fecha_fin_estadistica")
 
     if st.button("Analizar Distribución de Retornos") or ticker:
         if ticker:
