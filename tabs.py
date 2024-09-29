@@ -223,7 +223,6 @@ def optimizador_cartera_tab():
                 container6.plotly_chart(fig_prices, use_container_width=True)
                 container7 = st.container(border=True)
                 container7.subheader("Evolución de la Correlación entre Tickers")
-                    
                 correlaciones = calcular_correlacion_movil(rendimientos)
                 fig_corr_tiempo = crear_grafico_correlacion_tiempo(correlaciones, tickers)
                 container7.plotly_chart(fig_corr_tiempo, use_container_width=True)
