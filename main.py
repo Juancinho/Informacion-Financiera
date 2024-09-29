@@ -6,7 +6,7 @@ def main():
     configure_page()
     apply_custom_css()
 
-    st.title("📊 Información Financiera 📊")
+    st.title("📊 Dashboard Financiero 📊")
 
     tab1, tab2, tab3, tab4 = st.tabs(["Optimizador de Cartera", "Valoración de Opciones", "Mapa de Calor Opciones", "Análisis Estadístico"])
 
