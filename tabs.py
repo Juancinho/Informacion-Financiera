@@ -126,7 +126,7 @@ def optimizador_cartera_tab():
                     container3 = st.container(border=True)
                     container3.subheader("Cartera de Mínima Volatilidad")
                     container3.plotly_chart(min_vol_fig, use_container_width=True)
-                    container2.metric("Retorno Anualizado", f"{retorno_min_vol*100:.2f}%")
+                    container3.metric("Retorno Anualizado", f"{retorno_min_vol*100:.2f}%")
 
                 col1, col2 = st.columns(2)
                 with col1:
