@@ -98,7 +98,7 @@ def optimizador_cartera_tab():
                 rendimientos_medios = rendimientos.mean()
                 matriz_cov = rendimientos.cov()
 
-                ef_fig, max_sharpe_fig, min_vol_fig, max_sharpe_asignacion, min_vol_asignacion = mostrar_ef_simulada_con_aleatorias(
+                ef_fig, max_sharpe_fig, min_vol_fig, max_sharpe_asignacion, min_vol_asignacion,retorno_max_sharpe, retorno_min_vol = mostrar_ef_simulada_con_aleatorias(
                     rendimientos_medios, matriz_cov, num_carteras, tasa_libre_riesgo, tickers
                 )
 
@@ -120,11 +120,13 @@ def optimizador_cartera_tab():
                     container2 = st.container(border=True)
                     container2.subheader("Cartera con Máximo Ratio de Sharpe")
                     container2.plotly_chart(max_sharpe_fig, use_container_width=True)
+                    container2.metric("Retorno Anualizado", f"{retorno_max_sharpe*100:.2f}%")
 
                 with col2:
                     container3 = st.container(border=True)
                     container3.subheader("Cartera de Mínima Volatilidad")
                     container3.plotly_chart(min_vol_fig, use_container_width=True)
+                    container2.metric("Retorno Anualizado", f"{retorno_min_vol*100:.2f}%")
 
                 col1, col2 = st.columns(2)
                 with col1:

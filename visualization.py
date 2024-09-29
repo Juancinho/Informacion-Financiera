@@ -44,7 +44,7 @@ def mostrar_ef_simulada_con_aleatorias(rendimientos_medios, matriz_cov, num_cart
     fig3.update_traces(textposition='outside',textfont_size=22)
     fig3.update_layout(title="Asignación de la Cartera de Mínima Volatilidad", **plotly_config)
 
-    return fig1, fig2, fig3, max_sharpe_asignacion, min_vol_asignacion
+    return fig1, fig2, fig3, max_sharpe_asignacion, min_vol_asignacion, rp, rp_min
 
 def crear_mapa_calor(S, T, r, rango_volatilidad, rango_strike, tipo_opcion='call'):
     volatilidades = np.linspace(rango_volatilidad[0], rango_volatilidad[1], 20)
