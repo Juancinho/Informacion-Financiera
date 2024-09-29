@@ -355,6 +355,7 @@ def montecarlo_opciones():
                 )
             grafico_caminos=graficar_caminos_montecarlo(S,T,r,sigma,5,100)
             st.plotly_chart(grafico_caminos, use_container_width=True)
+            
             st.info("En esta gráfica se muestran 5 simulaciones del precio del activo subyacente con los datos introducidos anteriormente.")
 
 
