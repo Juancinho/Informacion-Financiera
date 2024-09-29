@@ -168,6 +168,7 @@ def optimizador_cartera_tab():
                     matriz_correlacion = rendimientos.corr()
                     
                     # Crear mapa de calor para la matriz de correlación
+             
                     fig_corr = go.Figure(data=go.Heatmap(
                         z=matriz_correlacion.values,
                         x=matriz_correlacion.index,
@@ -177,13 +178,22 @@ def optimizador_cartera_tab():
                         zmax=1,
                         hovertemplate='<b>X</b>: %{x}<br>' +
                                     '<b>Y</b>: %{y}<br>' +
-                                    '<b>Correlación</b>: %{z:.2f}<extra></extra>'
+                                    '<b>Correlación</b>: %{z:.2f}<extra></extra>',
+                        colorbar=dict(
+                            title='Correlación',
+                            x=1.05,  # Ajusta la posición horizontal de la barra de colores
+                            thickness=15,  # Ancho de la barra de colores
+                            len=0.75  # Longitud de la barra de colores
+                        )
                     ))
 
+                    # Actualizar layout del heatmap
                     fig_corr.update_layout(
                         xaxis=dict(constrain='domain'),
                         yaxis=dict(scaleanchor='x', constrain='domain'),
                         dragmode=False,  # Deshabilita el modo de arrastre
+                        autosize=True,  # Habilita el ajuste automático del tamaño
+                        margin=dict(l=0, r=10, t=30, b=0),  # Márgenes reducidos
                         **plotly_config
                     )
                     
