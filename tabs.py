@@ -161,9 +161,9 @@ def optimizador_cartera_tab():
                     # Crear el gráfico de barras agrupadas
                     rendimientos_fig = make_subplots(rows=1, cols=3, subplot_titles=("Rendimiento Anual", "Volatilidad Anual", "Ratio de Sharpe"))
                     
-                    rendimientos_fig.add_trace(go.Bar(name='Rendimiento Anual', x=estadisticas_rendimientos.index, y=estadisticas_rendimientos['Rendimiento Anual']),row=1, col=1)
-                    rendimientos_fig.add_trace(go.Bar(name='Rendimiento Anual', x=estadisticas_rendimientos.index, y=estadisticas_rendimientos['Volatilidad Anual']),row=1, col=2)
-                    rendimientos_fig.add_trace(go.Bar(name='Rendimiento Anual', x=estadisticas_rendimientos.index, y=estadisticas_rendimientos['Ratio de Sharpe']),row=1, col=3)
+                    rendimientos_fig.add_trace(go.Bar(name='Rendimiento Anual', x=estadisticas_rendimientos.index, y=estadisticas_rendimientos['Rendimiento Anual'], showlegend=False),row=1, col=1)
+                    rendimientos_fig.add_trace(go.Bar(name='Rendimiento Anual', x=estadisticas_rendimientos.index, y=estadisticas_rendimientos['Volatilidad Anual'], showlegend=False),row=1, col=2)
+                    rendimientos_fig.add_trace(go.Bar(name='Rendimiento Anual', x=estadisticas_rendimientos.index, y=estadisticas_rendimientos['Ratio de Sharpe'], showlegend=False),row=1, col=3)
                     
                     container5.plotly_chart(rendimientos_fig, use_container_width=True)
                 
