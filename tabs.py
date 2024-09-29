@@ -119,6 +119,8 @@ def optimizador_cartera_tab():
                 with col1:
                     container2 = st.container(border=True)
                     container2.subheader("Cartera con Máximo Ratio de Sharpe")
+                    with st.expander("Parámetros de Optimización", expanded=True):
+                            st.info("El ratio de sharpe")
                     container2.plotly_chart(max_sharpe_fig, use_container_width=True)
                     container2.metric("Retorno Esperado Anualizado", f"{retorno_esperado_max_sharpe*100:.2f}%")
                     container2.info("Este es el retorno anual esperado basado en datos históricos. No garantiza resultados futuros.")
