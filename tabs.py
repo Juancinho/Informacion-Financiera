@@ -236,16 +236,17 @@ def valoracion_opciones_tab():
                     asume que los precios de los activos siguen un movimiento browniano y que no hay posibilidad
                     de arbitraje (ganancias sin riesgo). Se asume además que no se pagan dividendos y que los mercados
                     son eficientes.''')
-        st.markdown("## Parámetros:")
+        st.markdown("### Parámetros:")
         st.markdown("- **S (precio del activo subyacente):** Es el precio actual del activo (por ejemplo, una acción) sobre el cual se basa la opción. ")
         st.markdown("- **K (precio de ejercicio o strike):** Es el precio al cual el titular de la opción tiene el derecho a comprar o vender el activo subyacente. ")
         st.markdown("- **T (tiempo hasta expiración):** Es el tiempo que falta para que expire la opción, expresado en años. ")
         st.markdown("- **r (tasa libre de riesgo):** Es la tasa de interés a la cual se puede invertir sin riesgo en el mercado, por ejemplo, los bonos del Tesoro.")
         st.markdown("- **σ (Volatilidad del activo subyacente):** Es la desviación estándar del rendimiento del activo subyacente y refleja la incertidumbre o el riesgo asociado al precio del activo.")
+        st.markdown("Donde $\Phi$ es la función de distribución acumulada de una normal estándar.")
    
    
 
-        st.markdown("## Fórmula utilizada:")
+        st.markdown("### Fórmula utilizada:")
         st.markdown("Hay dos componentes que son clave:")
         st.latex(r'''d_1=\frac{\ln (S / K)+\left(r+\frac{\sigma^2}{2}\right) T}{\sigma \sqrt{T}}''')
         st.latex(r'''d_2 = d_1 - \sigma \sqrt(T)''')
