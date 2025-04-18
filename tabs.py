@@ -74,6 +74,9 @@ def optimizador_cartera_tab():
         st.session_state.last_added_ticker = None
         new_ticker = ""
 
+
+    # After displaying selected tickers and before optimization parameters
+
     # Separator
     st.markdown("---")
 
@@ -236,6 +239,44 @@ def optimizador_cartera_tab():
                 correlaciones = calcular_correlacion_movil(rendimientos)
                 fig_corr_tiempo = crear_grafico_correlacion_tiempo(correlaciones, tickers)
                 container7.plotly_chart(fig_corr_tiempo, use_container_width=True)
+
+
+
+                if st.session_state.tickers:
+                    st.markdown("---")
+                    st.subheader("Métricas Individuales")
+                    
+                    # Get data for selected tickers
+                    rendimientos, precios = descargar_datos(st.session_state.tickers, fecha_inicio, fecha_fin)
+                    
+                    # Calculate metrics for each ticker
+                    metricas = pd.DataFrame({
+                        'Rendimiento Anual': rendimientos.mean() * 252,
+                        'Volatilidad Anual': rendimientos.std() * np.sqrt(252),
+                        'Ratio de Sharpe': (rendimientos.mean() * 252 - tasa_libre_riesgo) / (rendimientos.std() * np.sqrt(252))
+                    })
+                    
+                    # Display metrics in a grid
+                    cols = st.columns(min(3, len(st.session_state.tickers)))
+                    for i, ticker in enumerate(st.session_state.tickers):
+                        with cols[i % 3]:
+                            container = st.container(border=True)
+                            container.markdown(f"### {ticker}")
+                            container.metric(
+                                "Rendimiento Anual",
+                                f"{metricas.loc[ticker, 'Rendimiento Anual']*100:.2f}%",
+                                delta=None
+                            )
+                            container.metric(
+                                "Volatilidad Anual",
+                                f"{metricas.loc[ticker, 'Volatilidad Anual']*100:.2f}%",
+                                delta=None
+                            )
+                            container.metric(
+                                "Ratio de Sharpe",
+                                f"{metricas.loc[ticker, 'Ratio de Sharpe']:.2f}",
+                                delta=None
+                            )
 
 def valoracion_opciones_tab():
     st.header("Valoración de Opciones")
